@@ -44,13 +44,19 @@ const logout = () => {
 }
 
 const verify = () => {
-    sendEmailVerification(auth.currentUser)
-        .then(() => {
-            console.log('sent->', auth.currentUser);
-            // Email verification sent!
-            // ...
-        });
+    if (auth.currentUser) {
+        sendEmailVerification(auth.currentUser)
+            .then(() => {
+                console.log('Verification email sent to:', auth.currentUser);
+            })
+            .catch((error) => {
+                console.error('Error sending verification email:', error);
+            });
+    } else {
+        console.error('No user is currently signed in.');
+    }
 }
+
 
 export {
     signup,
