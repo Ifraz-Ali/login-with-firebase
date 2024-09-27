@@ -1,0 +1,60 @@
+import { app } from '@/app/firebase/firebaseConfig';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification } from "firebase/auth";
+
+const auth = getAuth(app);
+const signup = async (email: string, password: string) => {
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        return userCredential.user;
+    } catch (error) {
+        console.log("Singup Erorr :", error);
+        throw error;
+    }
+}
+
+const login = async (email: string, password: string) => {
+
+    // signInWithEmailAndPassword(auth, email, password)
+    //     .then((userCredential) => {
+    //         const user = userCredential.user;
+    //     })
+    //     .catch((error) => {
+    //         const errorCode = error.code;
+    //         const errorMessage = error.message;
+    //         console.error(errorMessage);
+    //     });
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password)
+        const user = userCredential.user;
+        console.log(user, "==> login user");
+        return user;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+const logout = () => {
+    signOut(auth).then(() => {
+        // Sign-out successful.
+    }).catch((error) => {
+        // An error happened.
+        console.log(error)
+    });
+}
+
+const verify = () => {
+    sendEmailVerification(auth.currentUser)
+        .then(() => {
+            console.log('sent->', auth.currentUser);
+            // Email verification sent!
+            // ...
+        });
+}
+
+export {
+    signup,
+    login,
+    logout,
+    verify
+}
